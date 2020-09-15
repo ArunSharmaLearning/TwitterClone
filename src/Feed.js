@@ -1,34 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, {  useState  , useEffect } from "react";
 import TweetBox from "./TweetBox";
 import Post from "./Post";
 import "./Feed.css";
 import db from "./firebase";
 import FlipMove from "react-flip-move";
-import firebase from "firebase"
 
-function Feed() {
-  const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) =>
-      setPosts(snapshot.docs.map((doc) => doc.data()))
-    );
-  }, []);
+function Feed(){
+  const [item, setitem] = useState([])
+  const [page, setpage]= useState(1)
+  const [loading, setloading] = useState(true)
+  const [lastVisible , setlastVisible] = useState(-1)
+  const [limit , setlimit]=useState(3)
+  const [id , setid]=useState(2)
+  
+    
+      const handleScroll = (e)=>
+        {
+     const {scrollTop , clientHeight , scrollHeight} = e.currentTarget
+     if(scrollHeight - scrollTop === clientHeight)
+     {
+        if(page<3){
+        setpage((prev)=>{ return(prev+1)})
+        }
+        
 
+        setid(id+2)
+     }
+
+   }
+useEffect(()=>{
+  
+  setloading(true)
+  
+
+    db.collection('posts')
+    .orderBy('id')
+    .startAfter(lastVisible).limit(3)
+    .onSnapshot((snapshot) => {
+       // this work twice, first call's snapshot contains doc of subscription describe upper
+       snapshot.docs.map((doc , index) =>{ if(index===id) {setlastVisible(doc.data().id)}})
+        
+       setitem((prev)=> {return  [...prev , ...snapshot.docs.map((doc) => doc.data()) ]});
+    });
+    
+    setloading(false)
+
+  } , [page])
+  
   return (
-    <div className="feed">
+    <div className="feed" onScroll={handleScroll}>
       <div className="feed__header">
         <h2>Home</h2>
       </div>
 
       <TweetBox />
-
+     
       <FlipMove>
-        {posts.map((post) =>{
-          console.log(post.id)
-          
+      {item && item.map((post) =>{
+          console.log("item" , item , page)
           return(
-          
+            
           <Post
             key={post.text}
             displayName={post.displayName}
@@ -39,7 +71,11 @@ function Feed() {
             image={post.image}
           />
         )}) }
+         
       </FlipMove>
+
+     
+      {loading && <h1>Loading...</h1>}
     </div>
   );
 }

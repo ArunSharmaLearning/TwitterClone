@@ -6,7 +6,7 @@ import db from "./firebase";
 function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
   const [tweetImage, setTweetImage] = useState("");
-
+  const [id , setid]=useState(0)
   const sendTweet = (e) => {
     e.preventDefault();
 
@@ -17,8 +17,10 @@ function TweetBox() {
       text: tweetMessage,
       image: tweetImage,
       avatar:"",
+      id:id
     });
 
+    setid(id+1)
     setTweetMessage("");
     setTweetImage("");
   };

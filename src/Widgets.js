@@ -1,7 +1,7 @@
 import React from "react";
 import "./Widgets.css";
 import {
-  TwitterTweetEmbed,
+  TwitterTweetEmbed
 } from "react-twitter-embed";
 import SearchIcon from "@material-ui/icons/Search";
 

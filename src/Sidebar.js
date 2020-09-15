@@ -29,7 +29,7 @@ function Sidebar() {
             <Button variant="outlined" className="sidebar_vibe" >
                 <span className="sidebar_text"> Tweets
                 
-                 </span>
+                </span>
                 <i className="sidebar_icon"> OK </i>
             
             </Button>
