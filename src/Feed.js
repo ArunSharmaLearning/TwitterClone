@@ -20,12 +20,12 @@ function Feed(){
      const {scrollTop , clientHeight , scrollHeight} = e.currentTarget
      if(scrollHeight - scrollTop === clientHeight)
      {
-        if(page<3){
+       
         setpage((prev)=>{ return(prev+1)})
-        }
+        
         
 
-        setid(id+2)
+        setid(id+1)
      }
 
    }
@@ -36,14 +36,15 @@ useEffect(()=>{
 
     db.collection('posts')
     .orderBy('id')
-    .startAfter(lastVisible).limit(3)
+    .startAfter(lastVisible).limit(limit)
     .onSnapshot((snapshot) => {
        // this work twice, first call's snapshot contains doc of subscription describe upper
-       snapshot.docs.map((doc , index) =>{ if(index===id) {setlastVisible(doc.data().id)}})
+       setlastVisible(id)
+       setlimit(1)
         
        setitem((prev)=> {return  [...prev , ...snapshot.docs.map((doc) => doc.data()) ]});
     });
-    
+    console.log(lastVisible , id , page)
     setloading(false)
 
   } , [page])
@@ -53,7 +54,7 @@ useEffect(()=>{
       <div className="feed__header">
         <h2>Home</h2>
       </div>
-
+    
       <TweetBox />
      
       <FlipMove>
@@ -73,9 +74,9 @@ useEffect(()=>{
         )}) }
          
       </FlipMove>
-
-     
       {loading && <h1>Loading...</h1>}
+     
+      
     </div>
   );
 }

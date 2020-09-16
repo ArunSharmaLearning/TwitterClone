@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import "./TweetBox.css";
 import { Avatar, Button } from "@material-ui/core";
 import db from "./firebase";
@@ -7,8 +7,20 @@ function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
   const [tweetImage, setTweetImage] = useState("");
   const [id , setid]=useState(0)
+
+
+  useEffect(()=>{
+    db.collection('posts').get().then(snap => {
+      setid(snap.size) // will return the collection size
+   })
+  } , [])
+
+  
   const sendTweet = (e) => {
     e.preventDefault();
+
+    
+   
 
     db.collection("posts").add({
       displayName: "Ritesh Tiwari",
